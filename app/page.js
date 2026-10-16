@@ -46,7 +46,7 @@ export default function Home() {
             <span className="eyebrow" style={{ color: "#d8bc8c" }}>
               AUTUMN · WINTER 2026
             </span>
-            <h1>
+            <h1 className="moraba">
               وقارِ بی‌صدا
               <br />
               در هر انتخاب
@@ -94,7 +94,7 @@ export default function Home() {
             <div className="section-head">
               <div>
                 <span className="eyebrow">Curated for you</span>
-                <h2 className="title">انتخاب بر اساس حس</h2>
+                <h2 className="title moraba">انتخاب بر اساس حس</h2>
               </div>
               <Link href="/categories">
                 همه دسته‌بندی‌ها <ChevronLeft size={18} />
@@ -133,7 +133,7 @@ export default function Home() {
             <div className="section-head">
               <div>
                 <span className="eyebrow">NEW ARRIVALS</span>
-                <h2 className="title">تازه‌های منتخب</h2>
+                <h2 className="title moraba">تازه‌های منتخب</h2>
               </div>
               <Link href="/shop">
                 مشاهده همه <ChevronLeft size={18} />
@@ -166,7 +166,7 @@ export default function Home() {
           </MotionReveal>
           <MotionReveal className="story-copy">
             <span className="eyebrow">OUR PHILOSOPHY</span>
-            <h2 className="title">
+            <h2 className="title moraba">
               لباس باید
               <br />
               شبیه خودِ شما باشد.
@@ -207,7 +207,7 @@ export default function Home() {
             <div className="section-head">
               <div>
                 <span className="eyebrow">MOST LOVED</span>
-                <h2 className="title">محبوب‌ترین‌ها</h2>
+                <h2 className="title moraba">محبوب‌ترین‌ها</h2>
               </div>
             </div>
           </MotionReveal>
@@ -245,7 +245,7 @@ export default function Home() {
           <div className="section-head">
             <div>
               <span className="eyebrow">SHIMSHIM JOURNAL</span>
-              <h2 className="title">مجله استایل</h2>
+              <h2 className="title moraba">مجله استایل</h2>
             </div>
             <Link href="/blog">
               همه مقاله‌ها <ChevronLeft size={18} />
