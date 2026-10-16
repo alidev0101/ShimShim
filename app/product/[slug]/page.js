@@ -1,0 +1,8 @@
+import { notFound } from "next/navigation";
+import ProductDetails from "@/components/ProductDetails";
+import ProductCard from "@/components/ProductCard";
+import { products } from "@/lib/products";
+
+export async function generateMetadata({params}){const {slug}=await params;const p=products.find(x=>x.slug===slug);if(!p)return{};return{title:p.name,description:`خرید ${p.name} از ${p.brand} با ضمانت اصالت و ارسال سریع.`,alternates:{canonical:`/product/${slug}`},openGraph:{title:p.name,description:`${p.brand} — خرید آنلاین از SHIMSHIM`,images:[p.image]}}}
+export function generateStaticParams(){return products.map(p=>({slug:p.slug}))}
+export default async function ProductPage({params}){const {slug}=await params;const product=products.find(p=>p.slug===slug);if(!product)notFound();const related=products.filter(p=>p.id!==product.id).slice(0,3);const schema={"@context":"https://schema.org","@type":"Product",name:product.name,image:[product.image],brand:{"@type":"Brand",name:product.brand},offers:{"@type":"Offer",priceCurrency:"IRR",price:product.price*10,availability:product.stock?"https://schema.org/InStock":"https://schema.org/OutOfStock"},aggregateRating:{"@type":"AggregateRating",ratingValue:product.rating,reviewCount:product.reviews}};return <><script type="application/ld+json" dangerouslySetInnerHTML={{__html:JSON.stringify(schema)}}/><ProductDetails product={product}/><section className="section"><div className="container"><span className="eyebrow">YOU MAY ALSO LIKE</span><h2 className="title">شاید بپسندید</h2><div className="grid-products">{related.map(p=><ProductCard key={p.id} product={p}/>)}</div></div></section></>}

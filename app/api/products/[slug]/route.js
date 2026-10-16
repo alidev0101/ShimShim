@@ -1,0 +1,3 @@
+import { connectDB } from "@/lib/db";import { Product } from "@/models";import { requireRole } from "@/lib/auth";
+export async function GET(_request,{params}){await connectDB();const {slug}=await params;const product=await Product.findOne({slug,published:true}).populate("brand category").lean();return product?Response.json(product):Response.json({message:"محصول پیدا نشد"},{status:404})}
+export async function DELETE(_request,{params}){if(!await requireRole(["admin"]))return Response.json({message:"دسترسی غیرمجاز"},{status:403});await connectDB();const {slug}=await params;await Product.deleteOne({slug});return Response.json({ok:true})}

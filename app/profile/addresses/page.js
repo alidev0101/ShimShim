@@ -1,0 +1,2 @@
+import AccountShell from "@/components/AccountShell";import { MapPin, Plus } from "lucide-react";
+export default function Addresses(){return <AccountShell title="آدرس‌های من"><div style={{display:"grid",gap:16}}><article className="glass" style={{padding:25,borderRadius:22}}><MapPin color="var(--gold)"/><h3>خانه</h3><p>تهران، سعادت‌آباد، بلوار دریا، پلاک ۲۴</p><span className="muted">گیرنده: شیما احمدی · ۰۹۱۲۱۲۳۴۵۶۷</span></article><button className="btn btn-outline" style={{width:"max-content"}}><Plus/> افزودن آدرس</button></div></AccountShell>}

@@ -1,0 +1,37 @@
+import mongoose from "mongoose";
+const { Schema, model, models } = mongoose;
+const opts = { timestamps: true };
+const ref = (name, required = true) => ({ type: Schema.Types.ObjectId, ref: name, required });
+
+const userSchema = new Schema({ name: { type: String, required: true, trim: true }, email: { type: String, required: true, unique: true, lowercase: true, index: true }, phone: String, passwordHash: { type: String, required: true, select: false }, role: { type: String, enum: ["user", "editor", "admin"], default: "user" }, isActive: { type: Boolean, default: true } }, opts);
+const categorySchema = new Schema({ name: { type: String, required: true }, slug: { type: String, required: true, unique: true, index: true }, description: String, image: String, parent: ref("Category", false), isActive: { type: Boolean, default: true } }, opts);
+const brandSchema = new Schema({ name: { type: String, required: true }, slug: { type: String, required: true, unique: true }, description: String, logo: String, isActive: { type: Boolean, default: true } }, opts);
+const variantSchema = new Schema({ sku: { type: String, required: true }, color: String, colorHex: String, size: String, stock: { type: Number, min: 0, default: 0 }, price: Number }, { _id: false });
+const productSchema = new Schema({ name: { type: String, required: true }, slug: { type: String, required: true, unique: true, index: true }, description: String, fabric: String, care: String, price: { type: Number, required: true, min: 0 }, compareAtPrice: Number, images: [String], category: ref("Category"), brand: ref("Brand"), variants: [variantSchema], tags: [String], featured: Boolean, published: { type: Boolean, default: false }, rating: { type: Number, default: 0 }, reviewCount: { type: Number, default: 0 }, seo: { title: String, description: String } }, opts);
+productSchema.index({ name: "text", description: "text", tags: "text" });
+const cartSchema = new Schema({ user: { ...ref("User"), unique: true }, items: [{ product: ref("Product"), variantId: Schema.Types.ObjectId, quantity: { type: Number, min: 1, default: 1 }, price: Number }], coupon: ref("Coupon", false) }, opts);
+const wishlistSchema = new Schema({ user: { ...ref("User"), unique: true }, products: [ref("Product")] }, opts);
+const addressSchema = new Schema({ user: ref("User"), title: String, receiver: String, phone: String, province: String, city: String, postalCode: String, line: String, isDefault: Boolean }, opts);
+const orderItemSchema = new Schema({ product: ref("Product"), name: String, image: String, sku: String, color: String, size: String, quantity: Number, unitPrice: Number, totalPrice: Number }, opts);
+const orderSchema = new Schema({ user: ref("User"), number: { type: String, required: true, unique: true }, items: [orderItemSchema], address: { receiver: String, phone: String, province: String, city: String, postalCode: String, line: String }, subtotal: Number, discount: Number, shipping: Number, total: Number, couponCode: String, status: { type: String, enum: ["pending", "paid", "processing", "shipped", "delivered", "cancelled", "refunded"], default: "pending" }, payment: { provider: String, authority: String, transactionId: String, paidAt: Date } }, opts);
+const reviewSchema = new Schema({ user: ref("User"), product: ref("Product"), order: ref("Order", false), rating: { type: Number, min: 1, max: 5, required: true }, title: String, body: String, approved: { type: Boolean, default: false } }, opts);
+reviewSchema.index({ user: 1, product: 1 }, { unique: true });
+const couponSchema = new Schema({ code: { type: String, required: true, uppercase: true, unique: true }, type: { type: String, enum: ["percent", "fixed"], required: true }, value: { type: Number, required: true }, minOrder: Number, maxDiscount: Number, usageLimit: Number, used: { type: Number, default: 0 }, startsAt: Date, expiresAt: Date, active: { type: Boolean, default: true } }, opts);
+const blogCategorySchema = new Schema({ name: String, slug: { type: String, unique: true } }, opts);
+const blogPostSchema = new Schema({ title: { type: String, required: true }, slug: { type: String, required: true, unique: true }, excerpt: String, content: String, featuredImage: String, author: ref("User"), category: ref("BlogCategory"), tags: [String], status: { type: String, enum: ["draft", "published"], default: "draft" }, publishedAt: Date, seo: { title: String, description: String } }, opts);
+const commentSchema = new Schema({ post: ref("BlogPost"), user: ref("User", false), name: String, email: String, body: { type: String, required: true }, approved: { type: Boolean, default: false }, parent: ref("Comment", false) }, opts);
+
+export const User = models.User || model("User", userSchema);
+export const Product = models.Product || model("Product", productSchema);
+export const Category = models.Category || model("Category", categorySchema);
+export const Brand = models.Brand || model("Brand", brandSchema);
+export const Cart = models.Cart || model("Cart", cartSchema);
+export const Wishlist = models.Wishlist || model("Wishlist", wishlistSchema);
+export const Order = models.Order || model("Order", orderSchema);
+export const OrderItem = models.OrderItem || model("OrderItem", orderItemSchema);
+export const Address = models.Address || model("Address", addressSchema);
+export const Review = models.Review || model("Review", reviewSchema);
+export const Coupon = models.Coupon || model("Coupon", couponSchema);
+export const BlogPost = models.BlogPost || model("BlogPost", blogPostSchema);
+export const BlogCategory = models.BlogCategory || model("BlogCategory", blogCategorySchema);
+export const Comment = models.Comment || model("Comment", commentSchema);
